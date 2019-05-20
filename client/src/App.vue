@@ -22,5 +22,7 @@ body {
   padding: 0;
   font-family: "Open Sans", sans-serif;
   font-weight: 300;
+  color: #555;
+  background-color: #fbfbfb;
 }
 </style>
