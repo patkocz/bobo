@@ -1,7 +1,11 @@
 <template>
   <div class="form">
     <div class="inputs">
-      <input v-model="currentFeeding.description" type="text">
+      <!-- <input v-model="currentFeeding.description" type="text"> -->
+      <select v-model="currentFeeding.description">
+        <option>HIPP</option>
+        <option>HIPP + ESP 10K</option>
+      </select>
       <input v-model.number="currentFeeding.amount" type="number">
     </div>
     <button @click.prevent="addEntry" type="submit">+</button>
@@ -18,7 +22,7 @@ export default {
     return {
       currentFeeding: {
         description: "",
-        amount: 0
+        amount: null
       }
     };
   },
@@ -48,7 +52,7 @@ export default {
       });
 
       this.currentFeeding.description = "";
-      this.currentFeeding.amount = 0;
+      this.currentFeeding.amount = null;
     }
   }
 };
@@ -67,6 +71,18 @@ input {
   /* font-weight: 300; */
 }
 
+select {
+  height: 39px;
+  color: #555;
+  font-size: 16px;
+  width: 60%;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  box-shadow: none;
+  border: 1px solid #ccc;
+  border-right: none;
+}
+
 input:first-of-type {
   width: 60%;
   border-top-left-radius: 15px;
@@ -80,6 +96,8 @@ input:last-of-type {
   width: 20%;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
   border: 1px solid #ccc;
   text-align: center;
 }

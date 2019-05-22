@@ -66,7 +66,7 @@ table {
 }
 
 .entryRow td {
-  height: 30px;
+  height: 40px;
   border-bottom: 1px solid #ccc;
 }
 .hourCell {
