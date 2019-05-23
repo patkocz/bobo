@@ -1,10 +1,10 @@
 <template>
   <div class="list">
     <ul>
-      <li v-bind:key="item.date" v-for="item in itemList">
+      <li v-bind:key="item._id" v-for="item in itemList">
         <h4 class="entryDate">{{item.date}}</h4>
         <table>
-          <tr class="entryRow" v-bind:key="feeding.hour" v-for="feeding in item.feedings">
+          <tr class="entryRow" v-bind:key="feeding._id" v-for="feeding in item.feedings">
             <td class="hourCell">{{feeding.hour}}</td>
             <td>{{feeding.description}}</td>
             <td>{{feeding.amount}}</td>

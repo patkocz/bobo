@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import dataService from "../services/dataService";
+
 export default {
   props: {
     items: Array,
@@ -28,7 +30,7 @@ export default {
   },
 
   methods: {
-    addEntry() {
+    async addEntry() {
       let today = this.items.find(item => {
         return item.date === this.currentDate;
       });
@@ -50,6 +52,15 @@ export default {
         description: this.currentFeeding.description,
         amount: this.currentFeeding.amount
       });
+
+      const feeding = {
+        date: this.currentDate,
+        hour: time,
+        description: this.currentFeeding.description,
+        amount: this.currentFeeding.amount
+      };
+
+      await dataService.addFeeding(feeding);
 
       this.currentFeeding.description = "";
       this.currentFeeding.amount = null;
