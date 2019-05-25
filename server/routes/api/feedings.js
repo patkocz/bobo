@@ -1,6 +1,6 @@
 const express = require("express");
 const mongobd = require("mongodb");
-const DbUrl = "connectionString";
+const DbUrl = "mongodb+srv://admin:admin@cluster0-zjobv.mongodb.net";
 
 const router = express.Router();
 

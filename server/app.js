@@ -12,6 +12,12 @@ const feedings = require("./routes/api/feedings");
 
 app.use("/api/feedings", feedings);
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(__dirname + "/public/index.html"));
+
+  app.get(".*", (req, res) => res.sendFile("/public/index.html"));
+}
+
 app.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
