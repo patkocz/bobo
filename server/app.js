@@ -5,6 +5,8 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 3000;
 
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+
 // register middlewares
 middleware(app);
 
@@ -21,4 +23,5 @@ if (process.env.NODE_ENV === "production") {
 
 app.listen(port, () => {
   console.log(`App is running on port ${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
 });

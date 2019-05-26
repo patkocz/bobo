@@ -1,7 +1,7 @@
 const express = require("express");
 const mongobd = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
-const DbUrl = "mongodb+srv://admin:admin@cluster0-zjobv.mongodb.net";
+const { DbUrl, DbName } = require("../../config")[process.env.NODE_ENV];
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
   const client = new MongoClient(DbUrl, { useNewUrlParser: true });
 
   await client.connect(async err => {
-    const dates = client.db("boboapp").collection("dates");
+    const dates = client.db(DbName).collection("dates");
 
     const ff = await dates
       .aggregate([
@@ -74,8 +74,8 @@ router.post("/", async (req, res) => {
         return res.status(400).send();
       }
 
-      const dates = client.db("boboapp").collection("dates");
-      const feedings = client.db("boboapp").collection("feedings");
+      const dates = client.db(DbName).collection("dates");
+      const feedings = client.db(DbName).collection("feedings");
       let today = await dates.findOne({ date: date });
 
       if (!today) {
@@ -105,7 +105,7 @@ router.delete("/:feedingId", async (req, res) => {
       return res.status(400).send();
     }
 
-    const feedings = client.db("boboapp").collection("feedings");
+    const feedings = client.db(DbName).collection("feedings");
     await feedings.updateOne(
       { _id: new ObjectId(feedingId) },
       { $set: { deleted: true } }
