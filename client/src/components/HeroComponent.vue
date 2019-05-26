@@ -1,6 +1,6 @@
 <template>
   <div class="jumbotron">
-    <h1>{{date}}</h1>
+    <h1>{{currentDate}}</h1>
     <div class="numberCircle">{{sum}}</div>
   </div>
 </template>
@@ -13,8 +13,8 @@ export default {
   },
   data() {
     return {
-      currentDate: "20.05.2019",
-      dailySum: 600
+      currentDate: new Date().toLocaleDateString()
+      // dailySum: 600
     };
   }
 };

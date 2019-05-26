@@ -1,5 +1,6 @@
 const express = require("express");
 const mongobd = require("mongodb");
+const ObjectId = require("mongodb").ObjectID;
 const DbUrl = "mongodb+srv://admin:admin@cluster0-zjobv.mongodb.net";
 
 const router = express.Router();
@@ -14,10 +15,28 @@ router.get("/", async (req, res) => {
     const ff = await dates
       .aggregate([
         {
+          // $lookup: {
+          //   from: "feedings",
+          //   localField: "_id",
+          //   foreignField: "dateId",
+          //   as: "feedings"
+          // }
+
           $lookup: {
             from: "feedings",
-            localField: "_id",
-            foreignField: "dateId",
+            let: { date_id: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$dateId", "$$date_id"] },
+                      { $ne: ["$deleted", true] }
+                    ]
+                  }
+                }
+              }
+            ],
             as: "feedings"
           }
         }
@@ -73,6 +92,27 @@ router.post("/", async (req, res) => {
       return res.status(201).send();
     });
   }
+});
+
+router.delete("/:feedingId", async (req, res) => {
+  const feedingId = req.params.feedingId;
+  const MongoClient = mongobd.MongoClient;
+  const client = new MongoClient(DbUrl, { useNewUrlParser: true });
+
+  client.connect(async err => {
+    if (err) {
+      console.log(err);
+      return res.status(400).send();
+    }
+
+    const feedings = client.db("boboapp").collection("feedings");
+    await feedings.updateOne(
+      { _id: new ObjectId(feedingId) },
+      { $set: { deleted: true } }
+    );
+  });
+
+  console.log(feedingId);
 });
 
 module.exports = router;

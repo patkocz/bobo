@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div v-if="dataLoaded">
-      <HeroComponent :date="currentDate" :sum="dailySum"/>
-      <FormComponent :items="items" :currentDate="currentDate"/>
-      <DataComponent :items="items"/>
+      <HeroComponent :sum="dailySum"/>
+      <FormComponent :items="items"/>
+      <DataComponent :entries="items"/>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
     return {
       items: [],
       sum: 300,
-      currentDate: new Date().toLocaleDateString(),
+      // currentDate: new Date().toLocaleDateString(),
       dataLoaded: false
     };
   },
@@ -35,8 +35,10 @@ export default {
   computed: {
     dailySum() {
       let ret = 0;
+      const currentDate = new Date().toLocaleDateString();
+
       this.items.forEach(element => {
-        if (this.currentDate === element.date) {
+        if (currentDate === element.date) {
           element.feedings.forEach(feeding => {
             ret += feeding.amount;
           });

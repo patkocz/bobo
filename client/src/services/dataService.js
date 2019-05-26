@@ -20,5 +20,9 @@ export default {
 
   async addFeeding(payload) {
     return await axios.post(url, payload);
+  },
+
+  async deleteFeeding(feedingId) {
+    return await axios.delete(`${url}/${feedingId}`);
   }
 };

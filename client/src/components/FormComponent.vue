@@ -1,14 +1,13 @@
 <template>
   <div class="form">
     <div class="inputs">
-      <!-- <input v-model="currentFeeding.description" type="text"> -->
       <select v-model="currentFeeding.description">
         <option>HIPP</option>
         <option>HIPP + ESP 10K</option>
       </select>
       <input v-model.number="currentFeeding.amount" type="number">
     </div>
-    <button @click.prevent="addEntry" type="submit">+</button>
+    <button :disabled="disableSend || disableBtn" @click.prevent="addEntry" type="submit">+</button>
   </div>
 </template>
 
@@ -17,20 +16,30 @@ import dataService from "../services/dataService";
 
 export default {
   props: {
-    items: Array,
-    currentDate: String
+    items: Array
   },
   data() {
     return {
+      currentDate: new Date().toLocaleDateString(),
       currentFeeding: {
         description: "",
         amount: null
-      }
+      },
+      disableSend: false
     };
   },
 
   methods: {
     async addEntry() {
+      console.log(this.currentFeeding);
+
+      if (
+        this.currentFeeding.description === "" ||
+        !this.currentFeeding.amount
+      ) {
+        return;
+      }
+
       let today = this.items.find(item => {
         return item.date === this.currentDate;
       });
@@ -60,10 +69,21 @@ export default {
         amount: this.currentFeeding.amount
       };
 
+      this.disableSend = true;
+
       await dataService.addFeeding(feeding);
 
       this.currentFeeding.description = "";
       this.currentFeeding.amount = null;
+      this.disableSend = false;
+    }
+  },
+
+  computed: {
+    disableBtn() {
+      if (this.currentFeeding.description === "" || !this.currentFeeding.amount)
+        return true;
+      return false;
     }
   }
 };
@@ -131,6 +151,11 @@ button {
   /* line-height: 40x; */
   font-size: 30px;
   box-shadow: 0px 1px 3px 3px #c8d2dd;
+}
+
+button:disabled,
+button[disabled] {
+  background-color: #687077;
 }
 </style>
 

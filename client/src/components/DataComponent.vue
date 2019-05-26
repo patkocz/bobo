@@ -8,6 +8,9 @@
             <td class="hourCell">{{feeding.hour}}</td>
             <td>{{feeding.description}}</td>
             <td>{{feeding.amount}}</td>
+            <td>
+              <button class="deleteBtn" @click="deleteFeeding(feeding._id)">-</button>
+            </td>
           </tr>
           <tr>
             <td></td>
@@ -21,21 +24,43 @@
 </template>
 
 <script>
+import dataService from "../services/dataService";
 // import fakeData from "../data/fakeData";
 
 export default {
   props: {
-    items: Array
+    entries: Array
   },
 
-  methods: {},
+  data() {
+    return {
+      items: this.entries
+    };
+  },
+
+  methods: {
+    async deleteFeeding(feedingId) {
+      console.log(feedingId);
+
+      this.items.forEach(element => {
+        element.feedings = element.feedings.filter(feeding => {
+          return feeding._id != feedingId;
+        });
+      });
+
+      this.items = this.items.filter(entry => {
+        return entry.feedings.length > 0;
+      });
+
+      await dataService.deleteFeeding(feedingId);
+
+      // con/sole.log(this.items[elementIndex]);
+    }
+  },
 
   computed: {
     itemList() {
       return this.items.slice().reverse();
-      // return this.items.sort((a, b) => {
-      //   return new Date(b.date) - new Date(a.date);
-      // });
     }
   }
 };
@@ -75,6 +100,21 @@ table {
 }
 .list ul {
   padding-left: 0px;
+}
+
+.deleteBtn {
+  background: transparent;
+  border: 1px solid crimson;
+  border-radius: 2em;
+  color: crimson;
+  display: inline-block;
+  font-size: 12px;
+  height: 20px;
+  line-height: 2px;
+  margin: 0 0 8px;
+  padding: 0;
+  text-align: center;
+  width: 20px;
 }
 </style>
 
