@@ -77,10 +77,15 @@ router.post("/", async (req, res) => {
       const dates = client.db(DbName).collection("dates");
       const feedings = client.db(DbName).collection("feedings");
       let today = await dates.findOne({ date: date });
+      const currentDate = new Date();
 
       if (!today) {
         today = {
-          date
+          date,
+          day: currentDate.getDate(),
+          month: currentDate.getMonth() + 1,
+          year: currentDate.getFullYear(),
+          timeFromEpoch: currentDate.getTime()
         };
         await dates.insertOne(today);
       }

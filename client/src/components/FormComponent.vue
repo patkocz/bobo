@@ -20,7 +20,6 @@ export default {
   },
   data() {
     return {
-      currentDate: new Date().toLocaleDateString(),
       currentFeeding: {
         description: "",
         amount: null
@@ -31,6 +30,7 @@ export default {
 
   methods: {
     async addEntry() {
+      const currentDate = new Date();
       console.log(this.currentFeeding);
 
       if (
@@ -41,12 +41,12 @@ export default {
       }
 
       let today = this.items.find(item => {
-        return item.date === this.currentDate;
+        return item.date === currentDate.toLocaleDateString();
       });
 
       if (!today) {
         today = {
-          date: this.currentDate,
+          date: currentDate.toLocaleDateString(),
           feedings: []
         };
 
@@ -54,7 +54,9 @@ export default {
       }
 
       let d = new Date();
-      const time = `${d.getHours()}:${d.getMinutes()}`;
+      const time = `${this.formatTime(d.getHours())}:${this.formatTime(
+        d.getMinutes()
+      )}`;
 
       today.feedings.push({
         hour: time,
@@ -63,7 +65,7 @@ export default {
       });
 
       const feeding = {
-        date: this.currentDate,
+        date: currentDate.toLocaleDateString(),
         hour: time,
         description: this.currentFeeding.description,
         amount: this.currentFeeding.amount
@@ -76,6 +78,10 @@ export default {
       this.currentFeeding.description = "";
       this.currentFeeding.amount = null;
       this.disableSend = false;
+    },
+
+    formatTime(value) {
+      return value < 10 ? `0${value}` : `${value}`;
     }
   },
 
