@@ -4,6 +4,7 @@
       <select v-model="currentFeeding.description">
         <option>HIPP</option>
         <option>HIPP + ESP 10K</option>
+        <option>WODA</option>
       </select>
       <input v-model.number="currentFeeding.amount" type="number">
     </div>

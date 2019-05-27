@@ -2,7 +2,8 @@
   <div class="list">
     <ul>
       <li v-bind:key="item._id" v-for="item in itemList">
-        <h4 class="entryDate">{{item.date}}</h4>
+        <!-- <h4 class="entryDate">{{item.date}}</h4> -->
+        <DateHeaderComponent :item="item"/>
         <table>
           <tr class="entryRow" v-bind:key="feeding._id" v-for="feeding in item.feedings">
             <td class="hourCell">{{feeding.hour}}</td>
@@ -25,11 +26,16 @@
 
 <script>
 import dataService from "../services/dataService";
+import DateHeaderComponent from "./DateHeaderComponent";
 // import fakeData from "../data/fakeData";
 
 export default {
   props: {
     entries: Array
+  },
+
+  components: {
+    DateHeaderComponent
   },
 
   data() {
