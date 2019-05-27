@@ -6,7 +6,7 @@
         <option>HIPP + ESP 10K</option>
         <option>WODA</option>
       </select>
-      <input v-model.number="currentFeeding.amount" type="number">
+      <input @keyup.enter="addEntry" v-model.number="currentFeeding.amount" type="number">
     </div>
     <button :disabled="disableSend || disableBtn" @click.prevent="addEntry" type="submit">+</button>
   </div>
