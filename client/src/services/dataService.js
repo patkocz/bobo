@@ -24,6 +24,12 @@ export default {
     return res;
   },
 
+  async updateFeeding(payload) {
+    console.log(url);
+    let res = await axios.put(url, payload);
+    return res;
+  },
+
   async deleteFeeding(feedingId) {
     console.log(`${url}/${feedingId}`);
     return await axios.delete(`${url}/${feedingId}`);

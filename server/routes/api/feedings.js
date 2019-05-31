@@ -15,13 +15,6 @@ router.get("/", async (req, res) => {
     const ff = await dates
       .aggregate([
         {
-          // $lookup: {
-          //   from: "feedings",
-          //   localField: "_id",
-          //   foreignField: "dateId",
-          //   as: "feedings"
-          // }
-
           $lookup: {
             from: "feedings",
             let: { date_id: "$_id" },
@@ -50,13 +43,6 @@ router.get("/", async (req, res) => {
     });
     res.send(result);
   });
-
-  // try {
-  //   const data = await loadDataFromDB();
-  //   res.status(200).send(await data.find({}).toArray());
-  // } catch (err) {
-  //   console.log(err);
-  // }
 });
 
 router.post("/", async (req, res) => {
@@ -118,6 +104,36 @@ router.delete("/:feedingId", async (req, res) => {
     await feedings.updateOne(
       { _id: new ObjectId(feedingId) },
       { $set: { deleted: true } }
+    );
+
+    return res.status(200).send();
+  });
+
+  console.log(feedingId);
+});
+
+router.put("/", async (req, res) => {
+  const feeding = req.body;
+  const feedingId = feeding._id;
+  const MongoClient = mongobd.MongoClient;
+  const client = new MongoClient(DbUrl, { useNewUrlParser: true });
+
+  await client.connect(async err => {
+    if (err) {
+      console.log(err);
+      return res.status(400).send();
+    }
+
+    const feedings = client.db(DbName).collection("feedings");
+    await feedings.updateOne(
+      { _id: new ObjectId(feeding._id) },
+      {
+        $set: {
+          description: feeding.description,
+          hour: feeding.hour,
+          amount: parseInt(feeding.amount)
+        }
+      }
     );
 
     return res.status(200).send();

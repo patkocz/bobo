@@ -22,15 +22,16 @@
       </div>
       <div class="input-field">
         <FontAwesomeIcon icon="prescription-bottle"/>
-        <input v-model="entry.amount" type="number" name id>
+        <input v-model.number="entry.amount" type="number" name id>
       </div>
       <button class="btn btn-back" type="submit" @click.prevent="goBack">Wróć</button>
-      <button class="btn btn-save" type="submit">Zapisz</button>
+      <button class="btn btn-save" type="submit" @click.prevent="update">Zapisz</button>
     </div>
   </div>
 </template>
 
 <script>
+import dataService from "../services/dataService";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faTrashAlt,
@@ -70,6 +71,10 @@ export default {
   methods: {
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
+    },
+    async update() {
+      await dataService.updateFeeding(this.entry);
+      this.goBack();
     }
   }
 };
