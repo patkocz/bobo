@@ -32,7 +32,7 @@ export default {
   methods: {
     async addEntry() {
       const currentDate = new Date();
-      console.log(this.currentFeeding);
+      // console.log(this.currentFeeding);
 
       if (
         this.currentFeeding.description === "" ||
@@ -59,12 +59,6 @@ export default {
         d.getMinutes()
       )}`;
 
-      today.feedings.push({
-        hour: time,
-        description: this.currentFeeding.description,
-        amount: this.currentFeeding.amount
-      });
-
       const feeding = {
         date: currentDate.toLocaleDateString(),
         hour: time,
@@ -74,7 +68,9 @@ export default {
 
       this.disableSend = true;
 
-      await dataService.addFeeding(feeding);
+      let result = await dataService.addFeeding(feeding);
+
+      today.feedings.push(result.data);
 
       this.currentFeeding.description = "";
       this.currentFeeding.amount = null;
@@ -149,8 +145,8 @@ button {
   margin: 0 auto;
   display: block;
   margin-top: 15px;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: none;
   background-color: #34495e;

@@ -44,7 +44,11 @@ router.get("/", async (req, res) => {
       .toArray();
 
     client.close();
-    res.send(ff);
+
+    let result = ff.filter(item => {
+      return item.feedings.length > 0;
+    });
+    res.send(result);
   });
 
   // try {
@@ -91,10 +95,10 @@ router.post("/", async (req, res) => {
       }
 
       feeding.dateId = today._id;
-      await feedings.insertOne(feeding);
+      let recordId = await feedings.insertOne(feeding);
 
       client.close();
-      return res.status(201).send();
+      return res.status(201).send(feeding);
     });
   }
 });
@@ -104,7 +108,7 @@ router.delete("/:feedingId", async (req, res) => {
   const MongoClient = mongobd.MongoClient;
   const client = new MongoClient(DbUrl, { useNewUrlParser: true });
 
-  client.connect(async err => {
+  await client.connect(async err => {
     if (err) {
       console.log(err);
       return res.status(400).send();
@@ -115,6 +119,8 @@ router.delete("/:feedingId", async (req, res) => {
       { _id: new ObjectId(feedingId) },
       { $set: { deleted: true } }
     );
+
+    return res.status(200).send();
   });
 
   console.log(feedingId);

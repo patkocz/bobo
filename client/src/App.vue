@@ -1,11 +1,12 @@
 <template>
   <div id="app">
-    <MainComponent msg="Welcome to Your Vue.js App"/>
+    <router-view></router-view>
+    <!-- <MainComponent msg="Welcome to Your Vue.js App"/> -->
   </div>
 </template>
 
 <script>
-import MainComponent from "./components/MainComponent.vue";
+import MainComponent from "./components/MainComponent";
 
 export default {
   name: "app",

@@ -75,5 +75,7 @@ export default {
 .container {
   width: 100%;
   margin: 0 auto;
+  background-color: #f5f5f5;
+  height: 100vh;
 }
 </style>
