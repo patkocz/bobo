@@ -52,7 +52,7 @@ export default {
 
   computed: {
     itemList() {
-      return this.items.slice().reverse();
+      return this.items.sort((a,b) => b.dts - a.dts)
     }
   }
 };

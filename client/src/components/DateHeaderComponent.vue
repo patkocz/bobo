@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h4 class="entryDate">{{item.date}}</h4>
-    <span>{{fluidSum}}</span>
+    <h4 class="entryDate">{{new Date(item.dts).toLocaleDateString() }}</h4>
+    <span>{{item.sum}}</span>
   </div>
 </template>
 
@@ -10,20 +10,6 @@ export default {
   props: {
     item: Object
   },
-
-  computed: {
-    fluidSum() {
-      let sum = 0;
-
-      if (this.item.feedings) {
-        this.item.feedings.forEach(element => {
-          sum += element.amount;
-        });
-      }
-
-      return sum;
-    }
-  }
 };
 </script>
 

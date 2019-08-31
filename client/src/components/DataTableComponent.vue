@@ -1,30 +1,30 @@
 <template>
   <table>
     <tr
-      v-touch:swipe.right="editEntry(feeding)"
-      v-touch:swipe.left="deleteEntry(feeding)"
+      v-touch:swipe.right="editEntrySwipe(feeding)"
+      v-touch:swipe.left="deleteEntrySwipe(feeding)"
       v-touch-class="'active'"
       class="entryRow"
-      v-bind:key="feeding._id"
-      v-for="feeding in item.feedings"
+      v-bind:key="feeding.id"
+      v-for="feeding in feedDate.Feedings"
     >
       <td class="hourCell">
-        <FontAwesomeIcon :icon="['far', 'clock']"/>
+        <FontAwesomeIcon :icon="['far', 'clock']" />
         {{feeding.hour}}
       </td>
       <td>{{feeding.description}}</td>
       <td class="amount-cell">
-        <FontAwesomeIcon @click="log" icon="prescription-bottle"/>
+        <FontAwesomeIcon @click="log" icon="prescription-bottle" />
         <div>{{feeding.amount}}</div>
       </td>
       <td class="btn-cell">
-        <button class="btn editBtn">
-          <FontAwesomeIcon :icon="['far', 'edit']"/>
+        <button class="btn editBtn" @click="editEntryClick(feeding)">
+          <FontAwesomeIcon :icon="['far', 'edit']" />
         </button>
       </td>
       <td class="btn-cell">
-        <button class="btn deleteBtn" @click="deleteFeeding(feeding._id)">
-          <FontAwesomeIcon :icon="['far', 'trash-alt']"/>
+        <button class="btn deleteBtn" @click="deleteEntryClick(feeding)">
+          <FontAwesomeIcon :icon="['far', 'trash-alt']" />
         </button>
       </td>
     </tr>
@@ -51,7 +51,8 @@ export default {
 
   data() {
     return {
-      editAmount: false
+      editAmount: false,
+      item: this.entry
     };
   },
 
@@ -59,47 +60,54 @@ export default {
     FontAwesomeIcon
   },
 
-  data() {
-    return {
-      item: this.entry
-    };
+  computed: {
+    feedDate() {
+      this.item.Feedings.sort((a,b) => b.dts - a.dts);
+      return this.item;
+    }
   },
   methods: {
     log() {
       console.log("click");
     },
-    editEntry(feeding) {
-      return (direction, e, s) => {
-        console.log(`swipe event: ${direction}, `, e);
-        console.log(`swipe event: ${direction}, `, e);
 
-        console.log("edit");
+    editEntrySwipe(feeding) {
+      return (direction, e, s) => {
         this.$router.push({
           name: "edit",
-          params: { id: feeding._id, feeding: feeding }
+          params: { id: feeding.id, feeding: feeding }
         });
       };
     },
-    deleteEntry(feeding) {
+
+    editEntryClick(feeding) {
+      this.$router.push({
+        name: "edit",
+        params: { id: feeding.id, feeding: feeding }
+      });
+    },
+
+    deleteEntrySwipe(feeding) {
       return (direction, e, s) => {
-        // console.log(`swipe event: ${direction}, `, recId);
-        // console.log(e);
         console.log("delete");
         this.$router.push({
           name: "delete",
-          params: { id: feeding._id, feeding: feeding }
+          params: { id: feeding.id, feeding: feeding }
         });
       };
+    },
+
+    deleteEntryClick(feeding) {
+      this.$router.push({
+        name: "delete",
+        params: { id: feeding.id, feeding: feeding }
+      });
     }
   }
 };
 </script>
 
 <style scoped>
-tr.active {
-  /* background-color: skyblue; */
-}
-
 table {
   width: 100%;
   margin: 0;

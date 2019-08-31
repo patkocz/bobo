@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import dataService from "../services/dataService";
+import dataService from "../services/sqlService";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faTrashAlt,
@@ -71,24 +71,12 @@ export default {
     goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
+
     async deleteFeeding() {
-      // this.items.forEach(element => {
-      //   element.feedings = element.feedings.filter(feeding => {
-      //     return feeding._id != feedingId;
-      //   });
-      // });
-
-      // this.items = this.items.filter(entry => {
-      //   return entry.feedings.length > 0;
-      // });
-
-      console.log(this.$route.params);
-
       await dataService.deleteFeeding(this.$route.params.id);
       this.$router.push("/");
-
-      // con/sole.log(this.items[elementIndex]);
     }
+    
   }
 };
 </script>
@@ -137,6 +125,7 @@ h3 {
   width: 120px;
   color: #fff;
   font-size: 20px;
+  cursor: pointer;
 }
 
 .btn-back {

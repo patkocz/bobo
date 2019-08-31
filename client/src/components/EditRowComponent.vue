@@ -12,6 +12,7 @@
         <FontAwesomeIcon :icon="['far', 'clipboard']"/>
         <select v-model="entry.description">
           <option>HIPP</option>
+          <option>SŁOICZEK</option>
           <option>HIPP + ESP 10K</option>
           <option>WODA</option>
         </select>
@@ -31,7 +32,7 @@
 </template>
 
 <script>
-import dataService from "../services/dataService";
+import dataService from "../services/sqlService";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faTrashAlt,
@@ -73,7 +74,7 @@ export default {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/");
     },
     async update() {
-      await dataService.updateFeeding(this.entry);
+      await dataService.updateFeeding(this.entry.id, this.entry);
       this.goBack();
     }
   }
@@ -155,6 +156,7 @@ h1 {
   width: 120px;
   color: #fff;
   font-size: 20px;
+  cursor: pointer;
 }
 
 .btn-back {

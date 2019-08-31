@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div v-if="dataLoaded">
-      <HeroComponent :sum="dailySum"/>
-      <FormComponent :items="items"/>
+      <HeroComponent :sum="today.sum"/>
+      <FormComponent :items="today"/>
       <DataComponent :entries="items"/>
     </div>
   </div>
@@ -13,7 +13,8 @@ import HeroComponent from "./HeroComponent";
 import FormComponent from "./FormComponent";
 import DataComponent from "./DataComponent";
 
-import dataService from "../services/dataService";
+//import dataService from "../services/dataService";
+import sqlService from '../services/sqlService';
 import isAsyncAvailable from "../helpers/isAsyncAvailable";
 
 export default {
@@ -27,46 +28,50 @@ export default {
     return {
       items: [],
       sum: 300,
+      todayId: null,
+      today: {},
       // currentDate: new Date().toLocaleDateString(),
       dataLoaded: false
     };
   },
 
   computed: {
-    dailySum() {
-      let ret = 0;
-      const currentDate = new Date().toLocaleDateString();
-
-      this.items.forEach(element => {
-        if (currentDate === element.date) {
-          element.feedings.forEach(feeding => {
-            ret += feeding.amount;
-          });
-        }
-      });
-
-      return ret;
-    }
   },
 
-  async created() {
-    if (isAsyncAvailable()) {
-      console.log("async request");
-      const response = await dataService.getDataAsync();
+  mounted() {
+    sqlService.addFeedDate()
+      .then(response => {
+        this.todayId = response.id;
+        this.today = response;
+        return sqlService.getWeekFeedDates();
+      })
+      .then(response => {
+          this.items = response;
+          const today = this.items.find(feedDate => {
+            const tdId = this.todayId;
+            return feedDate.id === tdId;
+          });
 
-      console.log(response);
-      if (response && response.data) {
-        this.items = response.data;
-        this.dataLoaded = true;
-      }
-    } else {
-      console.log("promise request");
-      dataService.getDataPromise().then(response => {
-        this.items = response.data;
-        this.dataLoaded = true;
-      });
-    }
-  }
+          if (today) {
+            this.today = today;
+          } else {
+            this.today.sum = 0;
+            this.today.Feedings = [];
+            this.items.push(this.today);
+          }
+
+          
+
+          this.dataLoaded = true;
+          console.log(this.today);
+          // this.sum = 
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    
+  },
+
 };
 </script>
 

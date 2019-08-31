@@ -1,12 +1,13 @@
 <template>
   <div class="form">
     <div class="inputs">
-      <select v-model="currentFeeding.description">
+      <select v-model="newFeeding.description">
         <option>HIPP</option>
+        <option>SŁOICZEK</option>
         <option>HIPP + ESP 10K</option>
         <option>WODA</option>
       </select>
-      <input @keyup.enter="addEntry" v-model.number="currentFeeding.amount" type="number">
+      <input @keyup.enter="addEntry" v-model.number="newFeeding.amount" type="number" />
     </div>
     <button :disabled="disableSend || disableBtn" @click.prevent="addEntry" type="submit">+</button>
   </div>
@@ -14,14 +15,15 @@
 
 <script>
 import dataService from "../services/dataService";
+import sqlService from "../services/sqlService";
 
 export default {
   props: {
-    items: Array
+    items: Object
   },
   data() {
     return {
-      currentFeeding: {
+      newFeeding: {
         description: "",
         amount: null
       },
@@ -30,28 +32,12 @@ export default {
   },
 
   methods: {
-    async addEntry() {
-      const currentDate = new Date();
-      // console.log(this.currentFeeding);
-
+    addEntry() {
       if (
-        this.currentFeeding.description === "" ||
-        !this.currentFeeding.amount
+        this.newFeeding.description === "" ||
+        !this.newFeeding.amount
       ) {
         return;
-      }
-
-      let today = this.items.find(item => {
-        return item.date === currentDate.toLocaleDateString();
-      });
-
-      if (!today) {
-        today = {
-          date: currentDate.toLocaleDateString(),
-          feedings: []
-        };
-
-        this.items.push(today);
       }
 
       let d = new Date();
@@ -60,22 +46,72 @@ export default {
       )}`;
 
       const feeding = {
-        date: currentDate.toLocaleDateString(),
         hour: time,
-        description: this.currentFeeding.description,
-        amount: this.currentFeeding.amount
+        description: this.newFeeding.description,
+        amount: this.newFeeding.amount
       };
 
       this.disableSend = true;
 
-      let result = await dataService.addFeeding(feeding);
+      sqlService
+        .addFeeding(feeding)
+        .then(response => {
+          this.items.Feedings.push(response);
+          this.items.sum += response.amount;
 
-      today.feedings.push(result.data);
+          this.newFeeding.description = "";
+          this.newFeeding.amount = null;
+          this.disableSend = false;
+        })
+        .catch(err => {
+          console.log(err);
+        });
 
-      this.currentFeeding.description = "";
-      this.currentFeeding.amount = null;
-      this.disableSend = false;
+      //   today.feedings.push(result.data);
+
+      //   this.currentFeeding.description = "";
+      //   this.currentFeeding.amount = null;
+      //   this.disableSend = false;
     },
+    // async addEntry() {
+    //   const currentDate = new Date();
+    //   // console.log(this.currentFeeding);
+
+    //   let today = this.items.find(item => {
+    //     return item.date === currentDate.toLocaleDateString();
+    //   });
+
+    //   if (!today) {
+    //     today = {
+    //       date: currentDate.toLocaleDateString(),
+    //       feedings: []
+    //     };
+
+    //     this.items.push(today);
+    //   }
+
+    //   let d = new Date();
+    //   const time = `${this.formatTime(d.getHours())}:${this.formatTime(
+    //     d.getMinutes()
+    //   )}`;
+
+    //   const feeding = {
+    //     date: currentDate.toLocaleDateString(),
+    //     hour: time,
+    //     description: this.currentFeeding.description,
+    //     amount: this.currentFeeding.amount
+    //   };
+
+    //   this.disableSend = true;
+
+    //   let result = await dataService.addFeeding(feeding);
+
+    //   today.feedings.push(result.data);
+
+    //   this.currentFeeding.description = "";
+    //   this.currentFeeding.amount = null;
+    //   this.disableSend = false;
+    // },
 
     formatTime(value) {
       return value < 10 ? `0${value}` : `${value}`;
@@ -84,7 +120,7 @@ export default {
 
   computed: {
     disableBtn() {
-      if (this.currentFeeding.description === "" || !this.currentFeeding.amount)
+      if (this.newFeeding.description === "" || !this.newFeeding.amount)
         return true;
       return false;
     }
